@@ -5,24 +5,40 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SeriesTracker.DataAccess;
+using SeriesTracker.Models;
+using static DataLibrary.BusinessLogic.SeriesProcessor;
 
 namespace SeriesTracker.Controllers
 {
     public class SeriesController : Controller
     {
-        SqlDataAccess _sqlDataAccess;
+        string connectionString;
 
         public SeriesController(IOptions<ConnectionConfig> connectionConfig)
         {
             var connection = connectionConfig.Value;
-            string connectionString = connection.SeriesDB;
-            _sqlDataAccess = new SqlDataAccess(connectionString);
+            connectionString = connection.SeriesDB;
         }
 
         public IActionResult Index()
         {
-            var sqlDataAccess = _sqlDataAccess.LoadSeries();
-            return View(sqlDataAccess);
+            var data = LoadSeries(connectionString);
+
+            List<SeriesModel> series = new List<SeriesModel>();
+
+            foreach (var row in data)
+            {
+                series.Add(new SeriesModel
+                {
+                    Title = row.Title,
+                    DebutYear = row.DebutYear,
+                    FilmType = row.FilmType,
+                    Genre = row.Genre,
+                    Language = row.Language
+                });
+            }
+
+            return View(series);
         }
     }
 }
