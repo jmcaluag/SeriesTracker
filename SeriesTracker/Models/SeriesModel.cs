@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,11 +16,11 @@ namespace SeriesTracker.Models
         [Display(Name = "Debut Year")]
         [CustomDate]
         [Required(ErrorMessage = "Please enter a debut year")]
-        public int DebutYear { get; set; }  
+        public int DebutYear { get; set; }
 
         [Display(Name = "Film Type")]
-        [Required(ErrorMessage = "Please enter a film type")]
         public string FilmType { get; set; }
+        public FilmTypeEnum ListOfFilmTypes { get; set; } 
 
         [Required(ErrorMessage = "Please enter a genre")]
         public string Genre { get; set; }

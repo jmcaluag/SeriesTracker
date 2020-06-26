@@ -1,10 +1,12 @@
 ﻿@model SeriesTracker.Models.SeriesModel
 
 @{
-    ViewData["Title"] = "Add a Series";
+    ViewData["Title"] = "Add";
 }
 
-<h1>Add a Series</h1>
+<h1>Add</h1>
+
+<h4>SeriesModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -22,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="FilmType" class="control-label"></label>
-                <input asp-for="FilmType" class="form-control" />
+                <select asp-for="FilmType" asp-items="Html.GetEnumSelectList<FilmTypeEnum>()" class="form-control"><option>Please select one</option></select>
                 <span asp-validation-for="FilmType" class="text-danger"></span>
             </div>
             <div class="form-group">
