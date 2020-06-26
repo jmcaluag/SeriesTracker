@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,8 +14,9 @@ namespace SeriesTracker.Models
         public string Title { get; set; }
 
         [Display(Name = "Debut Year")]
+        [CustomDate]
         [Required(ErrorMessage = "Please enter a debut year")]
-        public DateTime DebutYear { get; set; }
+        public int DebutYear { get; set; }  
 
         [Display(Name = "Film Type")]
         [Required(ErrorMessage = "Please enter a film type")]
@@ -25,5 +27,15 @@ namespace SeriesTracker.Models
 
         [Required(ErrorMessage = "Please enter a language")]
         public string Language { get; set; }
+    }
+
+    public class CustomDateAttribute : RangeAttribute
+    {
+        public CustomDateAttribute() : base(1920, DateTime.Now.Year) { }
+
+        public override string FormatErrorMessage(string name)
+        {
+            return $"Debut year must be between 1920 and { DateTime.Now.Year }";
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace DataLibrary.BusinessLogic
             
         }
 
-        public static int AddSeries(string connectionString, string title, DateTime debutYear, string filmType, string genre, string language)
+        public static int AddSeries(string connectionString, string title, int debutYear, string filmType, string genre, string language)
         {
             SeriesModel series = new SeriesModel
             {
