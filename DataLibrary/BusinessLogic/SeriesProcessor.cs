@@ -1,4 +1,4 @@
-﻿using DataLibrary.DataAccess;
+﻿    using DataLibrary.DataAccess;
 using DataLibrary.Models;
 using Microsoft.Extensions.Options;
 using System;
@@ -20,6 +20,26 @@ namespace DataLibrary.BusinessLogic
 
             return sqlDataAccess.LoadData<SeriesModel>(sql);
             
+        }
+
+        public static int AddSeries(string connectionString, string title, DateTime debutYear, string filmType, string genre, string language)
+        {
+            SeriesModel series = new SeriesModel
+            {
+                Title = title,
+                DebutYear = debutYear,
+                FilmType = filmType,
+                Genre = genre,
+                Language = language
+            };
+
+            SqlDataAccess sqlDataAccess = new SqlDataAccess();
+
+            sqlDataAccess.GetConnectionString(connectionString);
+
+            string sql = @"EXECUTE Series.usp_InsertSeries @Title, @DebutYear, @FilmType, @Genre, @Language ";
+
+            return sqlDataAccess.SaveData<SeriesModel>(sql, series);
         }
     }
 }

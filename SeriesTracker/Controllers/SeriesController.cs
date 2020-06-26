@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataLibrary.BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SeriesTracker.DataAccess;
@@ -39,6 +40,24 @@ namespace SeriesTracker.Controllers
             }
 
             return View(series);
+        }
+
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Add(SeriesModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                int seriesAdded = SeriesProcessor.AddSeries(connectionString, model.Title, model.DebutYear, model.FilmType, model.Genre, model.Language);
+                return RedirectToAction("Index");
+            }
+
+            return View();
         }
     }
 }
