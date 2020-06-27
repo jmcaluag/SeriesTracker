@@ -54,19 +54,6 @@ namespace SeriesTracker.Controllers
 
             if (ModelState.IsValid)
             {
-                switch(model.FilmType)
-                {
-                    case "0":
-                        model.FilmType = "Animation";
-                        break;
-                    case "1":
-                        model.FilmType = "Anime";
-                        break;
-                    case "2":
-                        model.FilmType = "Live Action";
-                        break;
-                }
-
                 int seriesAdded = SeriesProcessor.AddSeries(connectionString, model.Title, model.DebutYear, model.FilmType, model.Genre, model.Language);
                 return RedirectToAction("Index");
             }

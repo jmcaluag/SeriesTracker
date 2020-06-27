@@ -24,6 +24,20 @@ namespace DataLibrary.BusinessLogic
 
         public static int AddSeries(string connectionString, string title, int debutYear, string filmType, string genre, string language)
         {
+
+            switch (filmType)
+            {
+                case "0":
+                    filmType = "Animation";
+                    break;
+                case "1":
+                    filmType = "Anime";
+                    break;
+                case "2":
+                    filmType = "Live Action";
+                    break;
+            }
+
             SeriesModel series = new SeriesModel
             {
                 Title = title,
