@@ -9,6 +9,7 @@ namespace SeriesTracker.Models
 {
     public class SeriesModel
     {
+        public int SeriesID { get; set; }
         [Display(Name = "Series Title")]
         [Required(ErrorMessage = "Please enter a title")]
         public string Title { get; set; }

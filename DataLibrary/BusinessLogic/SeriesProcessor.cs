@@ -12,7 +12,7 @@ namespace DataLibrary.BusinessLogic
 
         public static List<SeriesModel> LoadSeries(string connectionString)
         {
-            string sql = "SELECT * FROM Series.ListSeries ORDER BY Title";
+            string sql = "SELECT * FROM Series.view_ListSeries ORDER BY title;";
 
             SqlDataAccess sqlDataAccess = new SqlDataAccess();
 
@@ -51,7 +51,7 @@ namespace DataLibrary.BusinessLogic
 
             sqlDataAccess.GetConnectionString(connectionString);
 
-            string sql = @"EXECUTE Series.usp_InsertSeries @Title, @DebutYear, @FilmType, @Genre, @Language ";
+            string sql = @"CALL Series.usp_Insert_Series(@Title, @DebutYear, @FilmType, @Genre, @Language)";
 
             return sqlDataAccess.SaveData<SeriesModel>(sql, series);
         }

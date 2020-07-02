@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,7 +21,7 @@ namespace DataLibrary.DataAccess
         // A general method to retrieve data from the database.  To be used by the SeriesProcessor class in DataLibrary.
         public List<T> LoadData<T>(string sql)
         {
-            using (IDbConnection connection = new SqlConnection(_connectionString))
+            using (IDbConnection connection = new NpgsqlConnection(_connectionString))
             {
                 return connection.Query<T>(sql).ToList();
             }
@@ -28,7 +29,7 @@ namespace DataLibrary.DataAccess
 
         public int SaveData<T>(string sql, T data)
         {
-            using (IDbConnection connection = new SqlConnection(_connectionString))
+            using (IDbConnection connection = new NpgsqlConnection(_connectionString))
             {
                 return connection.Execute(sql, data);
             }

@@ -32,6 +32,7 @@ namespace SeriesTracker.Controllers
             {
                 series.Add(new SeriesModel
                 {
+                    SeriesID = row.SeriesID,
                     Title = row.Title,
                     DebutYear = row.DebutYear,
                     FilmType = row.FilmType,
@@ -59,6 +60,11 @@ namespace SeriesTracker.Controllers
             }
 
             return View();
+        }
+
+        public async  Task<IActionResult> SeriesDetails(int? id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

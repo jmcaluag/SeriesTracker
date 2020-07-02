@@ -6,6 +6,7 @@ namespace DataLibrary.Models
 {
     public class SeriesModel
     {
+        public int SeriesID { get; set; }
         public string Title { get; set; }
         public int DebutYear { get; set; }
         public string FilmType { get; set; }
