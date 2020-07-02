@@ -55,5 +55,10 @@ namespace DataLibrary.BusinessLogic
 
             return sqlDataAccess.SaveData<SeriesModel>(sql, series);
         }
+
+        public static List<EpisodeModel> LoadEpisodes(string connectionString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

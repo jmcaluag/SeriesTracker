@@ -44,13 +44,13 @@ namespace SeriesTracker.Controllers
             return View(series);
         }
 
-        public IActionResult Add()
+        public IActionResult AddSeries()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Add(SeriesModel model)
+        public IActionResult AddSeries(SeriesModel model)
         {
 
             if (ModelState.IsValid)
@@ -62,7 +62,13 @@ namespace SeriesTracker.Controllers
             return View();
         }
 
-        public async  Task<IActionResult> SeriesDetails(int? id)
+        public async Task<IActionResult> SeriesDetails(int? id)
+        {
+            List<EpisodeModel> episodes = new List<EpisodeModel>();
+            return View(episodes);
+        }
+
+        public IActionResult AddSeason(int? id)
         {
             throw new NotImplementedException();
         }
