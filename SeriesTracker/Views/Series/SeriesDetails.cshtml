@@ -4,73 +4,83 @@
     ViewData["Title"] = "SeriesDetails";
 }
 
-<h1>SeriesDetails</h1>
+<h1>Title of Series Goes Here</h1>
 
 <p>
     <a asp-controller="Series" asp-action="AddSeason">Add a season</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            @*<th>
-                @Html.DisplayNameFor(model => model.SeasonNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EpisodeID)
-            </th>*@
-            <th>
-                @Html.DisplayNameFor(model => model.EpisodeSeriesNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EpisodeSeasonNumber)
-            </th>
-            <th>
-                @Html.DisplayName("Title")
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OriginalAirDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            @*<td>
-            @Html.DisplayFor(modelItem => item.SeasonNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EpisodeID)
-        </td>*@
-            <td rowspan="3">
-                @Html.DisplayFor(modelItem => item.EpisodeSeriesNumber)
-            </td>
-            <td rowspan="3">
-                @Html.DisplayFor(modelItem => item.EpisodeSeasonNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TitleEnglish)
-            </td>
-            <td rowspan="3">
-                @Html.DisplayFor(modelItem => item.OriginalAirDate)
-            </td>
-            @*<td>
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-        </td>*@
-        </tr>
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TitleRomaji)
-            </td>
-        </tr>
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TitleJapanese)
-            </td>
-        </tr>
+
+@if (ViewData["Language"].ToString().Equals("Japanese"))
+{
+    <table class="table">
+        <thead>
+            <tr>
+                @*<th>
+                        @Html.DisplayNameFor(model => model.SeasonNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EpisodeID)
+                    </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.EpisodeSeriesNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EpisodeSeasonNumber)
+                </th>
+                <th>
+                    @Html.DisplayName("Title")
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OriginalAirDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @*<td>
+                            @Html.DisplayFor(modelItem => item.SeasonNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EpisodeID)
+                        </td>*@
+                    <td rowspan="3">
+                        @Html.DisplayFor(modelItem => item.EpisodeSeriesNumber)
+                    </td>
+                    <td rowspan="3">
+                        @Html.DisplayFor(modelItem => item.EpisodeSeasonNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TitleEnglish)
+                    </td>
+                    <td rowspan="3">
+                        @Html.DisplayFor(modelItem => item.OriginalAirDate)
+                    </td>
+                    @*<td>
+                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                        </td>*@
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TitleRomaji)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TitleJapanese)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
-                
+else
+{
+    <h2>English table</h2>
+}
+
+

@@ -27,6 +27,14 @@ namespace DataLibrary.DataAccess
             }
         }
 
+        public string RetrieveData(string sql)
+        {
+            using (IDbConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                return connection.Query<string>(sql).ToString();
+            }
+        }
+
         public int SaveData<T>(string sql, T data)
         {
             using (IDbConnection connection = new NpgsqlConnection(_connectionString))

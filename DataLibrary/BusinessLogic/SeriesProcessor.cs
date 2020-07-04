@@ -9,10 +9,10 @@ namespace DataLibrary.BusinessLogic
 {
     public class SeriesProcessor
     {
-
+    // Series
         public static List<SeriesModel> LoadSeries(string connectionString)
         {
-            string sql = "SELECT * FROM Series.view_ListSeries ORDER BY title;";
+            string sql = "SELECT * FROM series.view_ListSeries ORDER BY title;";
 
             SqlDataAccess sqlDataAccess = new SqlDataAccess();
 
@@ -51,11 +51,23 @@ namespace DataLibrary.BusinessLogic
 
             sqlDataAccess.GetConnectionString(connectionString);
 
-            string sql = @"CALL Series.usp_Insert_Series(@Title, @DebutYear, @FilmType, @Genre, @Language)";
+            string sql = @"CALL series.usp_Insert_Series(@Title, @DebutYear, @FilmType, @Genre, @Language)";
 
             return sqlDataAccess.SaveData<SeriesModel>(sql, series);
         }
 
+        public static string GetSeriesLanguage(string connectionString, int seriesID)
+        {
+            string sql = $"SELECT * FROM series.uf_get_series_language( { seriesID } )";
+
+            SqlDataAccess sqlDataAccess = new SqlDataAccess();
+
+            sqlDataAccess.GetConnectionString(connectionString);
+
+            return sqlDataAccess.RetrieveData(sql);
+        }
+
+    // Episodes
         public static List<EpisodeModel> LoadEpisodes(string connectionString)
         {
             throw new NotImplementedException();

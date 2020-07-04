@@ -62,9 +62,12 @@ namespace SeriesTracker.Controllers
             return View();
         }
 
-        public async Task<IActionResult> SeriesDetails(int? id)
+        public IActionResult SeriesDetails(int? id)
         {
             List<EpisodeModel> episodes = new List<EpisodeModel>();
+
+            ViewData["Language"] = GetSeriesLanguage(connectionString, Convert.ToInt32(id));
+
             return View(episodes);
         }
 
