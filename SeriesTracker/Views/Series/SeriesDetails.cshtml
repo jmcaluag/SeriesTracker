@@ -10,47 +10,36 @@
     <a asp-controller="Series" asp-action="AddSeason">Add a season</a>
 </p>
 
-@if (ViewData["Language"].ToString().Equals("Japanese"))
-{
-    <table class="table">
-        <thead>
-            <tr>
-                @*<th>
-                        @Html.DisplayNameFor(model => model.SeasonNumber)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.EpisodeID)
-                    </th>*@
-                <th>
-                    @Html.DisplayNameFor(model => model.EpisodeSeriesNumber)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.EpisodeSeasonNumber)
-                </th>
-                <th>
-                    @Html.DisplayName("Title")
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.OriginalAirDate)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EpisodeNumberSeries)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EpisodeNumberSeason)
+            </th>
+            <th>
+                @Html.DisplayName("Title")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OriginalAirDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    @if (ViewData["Language"].ToString().Equals("Japanese"))
+    {
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    @*<td>
-                            @Html.DisplayFor(modelItem => item.SeasonNumber)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EpisodeID)
-                        </td>*@
                     <td rowspan="3">
-                        @Html.DisplayFor(modelItem => item.EpisodeSeriesNumber)
+                        @Html.DisplayFor(modelItem => item.EpisodeNumberSeries)
                     </td>
                     <td rowspan="3">
-                        @Html.DisplayFor(modelItem => item.EpisodeSeasonNumber)
+                        @Html.DisplayFor(modelItem => item.EpisodeNumberSeason)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.TitleEnglish)
@@ -58,11 +47,6 @@
                     <td rowspan="3">
                         @Html.DisplayFor(modelItem => item.OriginalAirDate)
                     </td>
-                    @*<td>
-                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                        </td>*@
                 </tr>
                 <tr>
                     <td>
@@ -76,11 +60,27 @@
                 </tr>
             }
         </tbody>
-    </table>
-}
-else
-{
-    <h2>English table</h2>
-}
-
-
+    }
+    else
+    {
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EpisodeNumberSeries)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EpisodeNumberSeason)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TitleEnglish)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OriginalAirDate)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    }
+</table>

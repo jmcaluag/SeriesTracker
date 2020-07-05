@@ -64,9 +64,26 @@ namespace SeriesTracker.Controllers
 
         public IActionResult SeriesDetails(int? id)
         {
+            ViewData["Language"] = GetSeriesLanguage(connectionString, Convert.ToInt32(id)); // Retrieves series language to decide which table to use in the view.
+
+            var data = LoadEpisodes(connectionString, Convert.ToInt32(id)); // This returns a DataLibrary.EpisodeModel
+
             List<EpisodeModel> episodes = new List<EpisodeModel>();
 
-            ViewData["Language"] = GetSeriesLanguage(connectionString, Convert.ToInt32(id));
+            foreach (var row in data)
+            {
+                episodes.Add(new EpisodeModel
+                {
+                    SeasonNumber = row.SeasonNumber,
+                    EpisodeID = row.EpisodeID,
+                    EpisodeNumberSeries = row.EpisodeNumberSeries,
+                    EpisodeNumberSeason = row.EpisodeNumberSeason,
+                    TitleEnglish = row.TitleEnglish,
+                    TitleRomaji = row.TitleRomaji,
+                    TitleJapanese = row.TitleJapanese,
+                    OriginalAirDate = row.OriginalAirDate.ToString("d")
+                });
+            }
 
             return View(episodes);
         }

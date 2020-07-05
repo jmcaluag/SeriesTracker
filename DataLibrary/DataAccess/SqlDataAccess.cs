@@ -31,7 +31,7 @@ namespace DataLibrary.DataAccess
         {
             using (IDbConnection connection = new NpgsqlConnection(_connectionString))
             {
-                return connection.Query<string>(sql).ToString();
+                return connection.QuerySingle<string>(sql).ToString(); // Uses Dapper's QuerySingle which only retrieves one single element.
             }
         }
 

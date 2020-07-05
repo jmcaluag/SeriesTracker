@@ -68,9 +68,98 @@ namespace DataLibrary.BusinessLogic
         }
 
     // Episodes
-        public static List<EpisodeModel> LoadEpisodes(string connectionString)
+        public static List<EpisodeModel> LoadEpisodes(string connectionString, int id)
         {
-            throw new NotImplementedException();
+            string sqlAllEpisodes = $"SELECT * FROM series.uf_list_all_episodes( { id } )";
+
+            SqlDataAccess sqlDataAccess = new SqlDataAccess();
+
+            sqlDataAccess.GetConnectionString(connectionString);
+
+            List<EpisodeModel> episodeList = TransformEpisodeModel(sqlDataAccess.LoadData<EpisodeSqlModel>(sqlAllEpisodes));
+
+            return episodeList;
+        }
+
+        private static List<EpisodeModel> TransformEpisodeModel(List<EpisodeSqlModel> episodeSqlList)
+        {
+            List<EpisodeModel> episodeList = new List<EpisodeModel>();
+
+            if(episodeSqlList.Count == 0)
+            {
+                return episodeList;
+            }
+
+            EpisodeModel newFirstEpisode = new EpisodeModel();
+            newFirstEpisode.SeasonNumber = episodeSqlList[0].SeasonNumber;
+            newFirstEpisode.EpisodeID = episodeSqlList[0].EpisodeID;
+            newFirstEpisode.EpisodeNumberSeries = episodeSqlList[0].EpisodeNumberSeries;
+            newFirstEpisode.EpisodeNumberSeason = episodeSqlList[0].EpisodeNumberSeason;
+            newFirstEpisode.OriginalAirDate = episodeSqlList[0].OriginalAirDate;
+
+            switch(episodeSqlList[0].LanguageCode)
+            {
+                case "ENG":
+                    newFirstEpisode.TitleEnglish = episodeSqlList[0].Title;
+                    break;                
+                case "RMJ":
+                    newFirstEpisode.TitleRomaji = episodeSqlList[0].Title;
+                    break;                
+                case "JPN":
+                    newFirstEpisode.TitleJapanese = episodeSqlList[0].Title;
+                    break;
+            }
+
+            episodeList.Add(newFirstEpisode);
+            int currentEpisodeID = episodeSqlList[0].EpisodeID;
+            int processingEpisodeNumber = 0;
+
+            for (int i = 0; i < episodeSqlList.Count; i++)
+            {
+                if (episodeSqlList[i].EpisodeID != currentEpisodeID)
+                {
+                    EpisodeModel newEpisode = new EpisodeModel();
+                    newEpisode.SeasonNumber = episodeSqlList[i].SeasonNumber;
+                    newEpisode.EpisodeID = episodeSqlList[i].EpisodeID;
+                    newEpisode.EpisodeNumberSeries = episodeSqlList[i].EpisodeNumberSeries;
+                    newEpisode.EpisodeNumberSeason = episodeSqlList[i].EpisodeNumberSeason;
+                    newEpisode.OriginalAirDate = episodeSqlList[i].OriginalAirDate;
+
+                    switch (episodeSqlList[i].LanguageCode)
+                    {
+                        case "ENG":
+                            newEpisode.TitleEnglish = episodeSqlList[i].Title;
+                            break;
+                        case "RMJ":
+                            newEpisode.TitleRomaji = episodeSqlList[i].Title;
+                            break;
+                        case "JPN":
+                            newEpisode.TitleJapanese = episodeSqlList[i].Title;
+                            break;
+                    }
+
+                    episodeList.Add(newEpisode);
+                    currentEpisodeID = episodeSqlList[i].EpisodeID;
+                    processingEpisodeNumber++;
+                }
+                else
+                {
+                    switch (episodeSqlList[i].LanguageCode)
+                    {
+                        case "ENG":
+                            episodeList[processingEpisodeNumber].TitleEnglish = episodeSqlList[i].Title;
+                            break;
+                        case "RMJ":
+                            episodeList[processingEpisodeNumber].TitleRomaji = episodeSqlList[i].Title;
+                            break;
+                        case "JPN":
+                            episodeList[processingEpisodeNumber].TitleJapanese = episodeSqlList[i].Title;
+                            break;
+                    }
+                }
+            }
+
+            return episodeList;
         }
     }
 }
