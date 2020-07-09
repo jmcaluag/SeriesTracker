@@ -90,7 +90,12 @@ namespace SeriesTracker.Controllers
 
         public IActionResult AddSeason(int? id)
         {
-            throw new NotImplementedException();
+            AddSeasonModel addSeasonModel = new AddSeasonModel
+            {
+                SeriesID = Convert.ToInt32(id)
+            };
+
+            return View(addSeasonModel);
         }
     }
 }

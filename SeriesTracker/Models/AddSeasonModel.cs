@@ -10,5 +10,6 @@ namespace SeriesTracker.Models
         public string WikipediaURL { get; set; }
         public bool OneSeason { get; set; }
         public int SpecifiedSeason { get; set; }
+        public int SeriesID { get; set; }
     }
 }
