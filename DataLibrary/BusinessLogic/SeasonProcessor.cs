@@ -101,6 +101,9 @@ namespace DataLibrary.BusinessLogic
                 int indexOfSpecifiedSeason = GetSeasonIndex(wikiSections, specifiedSeason);
                 string seasonSectionUri = CreateUriToEpisodeList(indexOfSpecifiedSeason, GetWikiSubdirectory(wikipediaURL));
                 string contentOfSeasonSection = await GetContentsAsWikitext(seasonSectionUri); // Gets the season links as Wikitext
+                string seasonPageUrl = CreateSeasonPageUrl(contentOfSeasonSection);
+                string seasonPageUri = CreateWikiURI(seasonPageUrl);
+                List<Section> seasonPageSections = await GetListOfWikiSections(seasonPageUri);
             }
             // TODO: Implement when there is more than one season.
 
@@ -166,6 +169,25 @@ namespace DataLibrary.BusinessLogic
             }
 
             return seasonIndex;
+        }
+
+        private static string CreateSeasonPageUrl(string contentOfSeasonSection)
+        {
+            Regex regexPattern = new Regex(@"{:[\w\s()]+");
+
+            string wikipediaURL = "https://en.wikipedia.org/wiki/";
+
+            string seasonPageURL = null;
+
+            if (regexPattern.IsMatch(contentOfSeasonSection))
+            {
+                string seasonPageSubdirectory = regexPattern.Match(contentOfSeasonSection).Value.Substring(2);
+
+                seasonPageURL = wikipediaURL + seasonPageSubdirectory.Trim().Replace(' ', '_');
+            }
+
+            return seasonPageURL;
+
         }
     }
 
