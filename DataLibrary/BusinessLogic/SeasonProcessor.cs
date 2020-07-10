@@ -93,12 +93,14 @@ namespace DataLibrary.BusinessLogic
             {
                 sectionIndexOfEpisodes = GetEpisodesIndex(wikiSections);
                 string episodeSectionUri = CreateUriToEpisodeList(sectionIndexOfEpisodes, GetWikiSubdirectory(wikipediaURL));
-                episodeListAsWikitext = await GetEpisodeListAsWikitext(episodeSectionUri);
+                episodeListAsWikitext = await GetContentsAsWikitext(episodeSectionUri); // Gets Episode List as Wikitext
                 return episodeListAsWikitext;
             }
             else
             {
                 int indexOfSpecifiedSeason = GetSeasonIndex(wikiSections, specifiedSeason);
+                string seasonSectionUri = CreateUriToEpisodeList(indexOfSpecifiedSeason, GetWikiSubdirectory(wikipediaURL));
+                string contentOfSeasonSection = await GetContentsAsWikitext(seasonSectionUri); // Gets the season links as Wikitext
             }
             // TODO: Implement when there is more than one season.
 
@@ -134,7 +136,7 @@ namespace DataLibrary.BusinessLogic
             return selectedSectionURI;
         }
 
-        private static async Task<string> GetEpisodeListAsWikitext(string episodeSectionUri)
+        private static async Task<string> GetContentsAsWikitext(string episodeSectionUri)
         {
             string response = await client.GetStringAsync(episodeSectionUri);
             WikitextSeason episodeSection= JsonSerializer.Deserialize<WikitextSeason>(response);
