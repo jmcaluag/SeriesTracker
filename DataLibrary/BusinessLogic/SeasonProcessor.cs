@@ -106,7 +106,6 @@ namespace DataLibrary.BusinessLogic
                 List<Section> seasonPageSections = await GetListOfWikiSections(seasonPageUri);
                 episodeListAsWikitext = await GetEpisodeListAsWikitext(seasonPageSections, true, seasonPageUrl, 0); // Used a recurvsive 
             }
-            // TODO: Implement when there is more than one season.
 
             return episodeListAsWikitext;
         }
