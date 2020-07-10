@@ -125,7 +125,7 @@ namespace SeriesTracker.Controllers
             string alpha = model.WikipediaURL;
             int SeriesID = model.SeriesID;
 
-            return RedirectToAction("SeriesDetails", SeriesID);
+            return RedirectToAction("SeriesDetails", new { id = SeriesID });
         }
     }
 }
