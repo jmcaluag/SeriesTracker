@@ -13,7 +13,7 @@ namespace SeriesTracker.Models
         [Display(Name = "Does the series have one season?: ")]
         public bool OneSeason { get; set; }
         [Display(Name = "Specify which season number:")]
-        public int SpecifiedSeason { get; set; }
+        public int SpecifiedSeason { get; set; } = 0;
         public int SeriesID { get; set; }
     }
 }

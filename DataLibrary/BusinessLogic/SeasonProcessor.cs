@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using DataLibrary.Models;
 
 namespace DataLibrary.BusinessLogic
 {
     public class SeasonProcessor
     {
-        public static int AddSeason(string connectionString, string wikipediaURL, bool oneSeason, int specifiedSeason, int seriesID)
+        private static readonly HttpClient client = new HttpClient();
+
+        public static async Task<int> AddSeason(string connectionString, string wikipediaURL, bool oneSeason, int specifiedSeason, int seriesID)
         {
             // 1. Wikipedia URL into Wikipedia RESTful API URI
 
@@ -30,7 +36,104 @@ namespace DataLibrary.BusinessLogic
 
             // 4. Use WikiEpisode list and loop to add episode details in the database.
 
-            throw new NotImplementedException();
+            // 1
+            string wikipediaURI = CreateWikiURI(wikipediaURL);
+
+            // 2
+            List<Section> wikiSections = await GetListOfWikiSections(wikipediaURI);
+            string episodeListAsWikitext = await GetEpisodeListAsWikitext(wikiSections, oneSeason, wikipediaURL);
+
+            
+
+            return 0; // Temp to appease the return method.
+        }
+
+        private static string CreateWikiURI(string wikipediaURL)
+        {
+            wikipediaURL = wikipediaURL.Trim();
+            string wikiUriFormat = "https://en.wikipedia.org/w/api.php?action=parse&format=json&prop=sections&page=";
+            string subDirectory = GetWikiSubdirectory(wikipediaURL);
+
+            return wikiUriFormat + subDirectory;
+        }
+
+        private static string GetWikiSubdirectory(string wikipediaURL)
+        {
+            int indexShift = 5; //Takes account of "wiki/" spaces.
+
+            int number = wikipediaURL.IndexOf("wiki/") + indexShift;
+
+            return wikipediaURL.Substring(number);
+        }
+
+        private static async Task<List<Section>> GetListOfWikiSections(string wikipediaURI)
+        {
+            WikiSection retrievedJsonSection = await GetWikiSectionsAsJSON(wikipediaURI);
+
+            return retrievedJsonSection.SectionParse.Sections;
+        }
+
+        private static async Task<WikiSection> GetWikiSectionsAsJSON(string wikiURI)
+        {
+            string response = await client.GetStringAsync(wikiURI);
+            WikiSection wikiSectionJson = JsonSerializer.Deserialize<WikiSection>(response);
+
+            return wikiSectionJson;
+        }
+
+        private static async Task<string> GetEpisodeListAsWikitext(List<Section> wikiSections, bool oneSeason, string wikipediaURL)
+        {
+            int sectionIndexOfEpisodes = 0;
+            string episodeListAsWikitext = "";
+
+            if (oneSeason)
+            {
+                sectionIndexOfEpisodes = GetEpisodesIndex(wikiSections);
+                string episodeSectionUri = CreateUriToEpisodeList(sectionIndexOfEpisodes, GetWikiSubdirectory(wikipediaURL));
+                episodeListAsWikitext = await GetEpisodeListAsWikitext(episodeSectionUri);
+                return episodeListAsWikitext;
+            }
+
+            return episodeListAsWikitext;
+        }
+
+        private static int GetEpisodesIndex(List<Section> wikiSections)
+        {
+            int numberOfSections = wikiSections.Count;
+            int indexPosition = 0;
+            int episodeIndex = 0;
+
+            while (indexPosition < numberOfSections)
+            {
+                Section section = wikiSections[indexPosition];
+
+                if (section.Line.Equals("Episode list") || section.Line.Equals("Episodes"))
+                {
+                    episodeIndex = Convert.ToInt32(section.Index);
+                    break;
+                }
+
+                indexPosition++;
+            }
+
+            return episodeIndex;
+        }
+
+        private static string CreateUriToEpisodeList(int indexSection, string subDirectory)
+        {
+            string selectedSectionURI = String.Format($"https://en.wikipedia.org/w/api.php?action=parse&format=json&page={ subDirectory }&prop=wikitext&section={ indexSection }");
+
+            return selectedSectionURI;
+        }
+
+        private static async Task<string> GetEpisodeListAsWikitext(string episodeSectionUri)
+        {
+            string response = await client.GetStringAsync(episodeSectionUri);
+            WikitextSeason episodeSection= JsonSerializer.Deserialize<WikitextSeason>(response);
+
+            string episodeList = episodeSection.SeasonParse.SeasonWikitext.Content;
+
+            return episodeList;
         }
     }
 

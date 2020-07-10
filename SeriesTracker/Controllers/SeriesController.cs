@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using SeriesTracker.DataAccess;
 using SeriesTracker.Models;
 using static DataLibrary.BusinessLogic.SeriesProcessor;
+using static DataLibrary.BusinessLogic.SeasonProcessor;
 
 namespace SeriesTracker.Controllers
 {
@@ -120,12 +121,16 @@ namespace SeriesTracker.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddSeason(AddSeasonModel model)
+        public async Task<IActionResult> AddSeason(AddSeasonModel model)
         {
-            string alpha = model.WikipediaURL;
-            int SeriesID = model.SeriesID;
+            if(model.SpecifiedSeason == 0)
+            {
+                model.SpecifiedSeason = 0;
+            }
 
-            return RedirectToAction("SeriesDetails", new { id = SeriesID });
+            int episodesAdded = await SeasonProcessor.AddSeason(connectionString, model.WikipediaURL, model.OneSeason, model.SpecifiedSeason, model.SeriesID);
+
+            return RedirectToAction("SeriesDetails", new { model.SeriesID });
         }
     }
 }
