@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DataLibrary.Models;
 
@@ -41,7 +42,9 @@ namespace DataLibrary.BusinessLogic
 
             // 2
             List<Section> wikiSections = await GetListOfWikiSections(wikipediaURI);
-            string episodeListAsWikitext = await GetEpisodeListAsWikitext(wikiSections, oneSeason, wikipediaURL);
+            string episodeListAsWikitext = await GetEpisodeListAsWikitext(wikiSections, oneSeason, wikipediaURL, specifiedSeason);
+            
+            // TODO: eipsodeListAsWikitext ready for parsing and scraping.
 
             
 
@@ -81,7 +84,7 @@ namespace DataLibrary.BusinessLogic
             return wikiSectionJson;
         }
 
-        private static async Task<string> GetEpisodeListAsWikitext(List<Section> wikiSections, bool oneSeason, string wikipediaURL)
+        private static async Task<string> GetEpisodeListAsWikitext(List<Section> wikiSections, bool oneSeason, string wikipediaURL, int specifiedSeason)
         {
             int sectionIndexOfEpisodes = 0;
             string episodeListAsWikitext = "";
@@ -93,6 +96,11 @@ namespace DataLibrary.BusinessLogic
                 episodeListAsWikitext = await GetEpisodeListAsWikitext(episodeSectionUri);
                 return episodeListAsWikitext;
             }
+            else
+            {
+                int indexOfSpecifiedSeason = GetSeasonIndex(wikiSections, specifiedSeason);
+            }
+            // TODO: Implement when there is more than one season.
 
             return episodeListAsWikitext;
         }
@@ -134,6 +142,28 @@ namespace DataLibrary.BusinessLogic
             string episodeList = episodeSection.SeasonParse.SeasonWikitext.Content;
 
             return episodeList;
+        }
+
+        private static int GetSeasonIndex(List<Section> wikiSections, int specifiedSeason)
+        {
+            int sectionSize = wikiSections.Count;
+            int indexPos = 0;
+            int seasonIndex = -1;
+
+            while (indexPos < sectionSize)
+            {
+                Section section = wikiSections[indexPos];
+
+                if (section.Line.Contains($"Season { specifiedSeason }"))
+                {
+                    seasonIndex = Convert.ToInt32(wikiSections[indexPos].Index);
+                    break;
+                }
+
+                indexPos++;
+            }
+
+            return seasonIndex;
         }
     }
 
