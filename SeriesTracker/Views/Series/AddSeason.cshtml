@@ -6,7 +6,7 @@
 
 <h1>AddSeason</h1>
 
-<h4>AddSeasonModel</h4>
+<h4>Series ID : @Model.SeriesID</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -35,7 +35,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="SeriesDetails" asp-route-id=@ViewData["SeriesID"]>Back to Episode List</a>
 </div>
 
 @section Scripts {

@@ -111,7 +111,7 @@ namespace SeriesTracker.Controllers
 
         public IActionResult AddSeason(int? id)
         {
-            AddSeasonModel addSeasonModel = new AddSeasonModel
+            AddSeasonModel addSeasonModel = new AddSeasonModel()
             {
                 SeriesID = Convert.ToInt32(id)
             };
@@ -119,9 +119,13 @@ namespace SeriesTracker.Controllers
             return View(addSeasonModel);
         }
 
-        public IActionResult AddSeasonTest()
+        [HttpPost]
+        public IActionResult AddSeason(AddSeasonModel model)
         {
-            return RedirectToAction("Index");
+            string alpha = model.WikipediaURL;
+            int SeriesID = model.SeriesID;
+
+            return RedirectToAction("SeriesDetails", SeriesID);
         }
     }
 }
