@@ -43,7 +43,7 @@ namespace DataLibrary.BusinessLogic
 
             // 4. Use WikiEpisode list and loop to add episode details in the database.
                 // 4.1 Add a new season record to Series.Season
-                // 4.2 Retrieve season id of the season being added (from 4.1)
+                // 4.2 Retrieve season id of the season being added (from 4.1) - DON'T NEED THIS BECAUSE THE STORED PROCEDURE WAS ALREADY DESIGNED FOR THIS
                 // 4.3 Retrieve language of the series to add Japanese episodes or ignore that process.
                 // 4.4 Loop to add episodes from WikiEpisode and episode titles.
 
@@ -55,20 +55,19 @@ namespace DataLibrary.BusinessLogic
             string episodeListAsWikitext = await GetEpisodeListAsWikitext(wikiSections, oneSeason, wikipediaURL, specifiedSeason);
 
             // 3
-            List<WikiEpisode> listOfEpisodes = ScrapeEpisodes(episodeListAsWikitext);
+            if(oneSeason) { specifiedSeason = 1; }
+            List<WikiEpisode> listOfEpisodes = ScrapeEpisodes(episodeListAsWikitext, seriesID, specifiedSeason);
 
             // TODO: 
             // 4
             int addedSeason = AddNewSeason(connectionString, oneSeason, seriesID, specifiedSeason); // 4.1
 
-            int seasonID = GetSeasonID(connectionString, oneSeason, seriesID, specifiedSeason); // 4.2
-
             string seriesLanguage = GetSeriesLanguage(connectionString, seriesID); // 4.3
 
-            // 4.4
             // Arguments needed to add episode details: seriesID, seasonNumber, episodeNumberSeason, episodeNumberSeries, original air date
             // Arguments needed to add episode titles: episode ID, language code, title
 
+            int addedEpisodes = InsertEpisodesToDatabase(connectionString, oneSeason, seriesID, specifiedSeason, seriesLanguage, listOfEpisodes); // 4.4
             
 
             return 0; // Temp to appease the return method.
@@ -237,23 +236,26 @@ namespace DataLibrary.BusinessLogic
                 return connection.Execute(sql, new { SeriesID = seriesID, SeasonNumber = seasonNumber });
             }
         }
-        private static int GetSeasonID(string connectionString, bool oneSeason, int seriesID, int seasonNumber)
+
+        private static int InsertEpisodesToDatabase(string connectionString, bool oneSeason, int seriesID, int seasonNumber, string seriesLanguage, List<WikiEpisode> episodeList)
         {
+            int episodesAdded = 0;
+
+            if (oneSeason) { seasonNumber = 1; };
+
             SqlDataAccess sqlDataAccess = new SqlDataAccess();
             sqlDataAccess.GetConnectionString(connectionString);
 
-            string sql;
+            string insertEpisodeSQL = @"CALL Series.usp_Insert_Episode(varSeriesID INT, varSeasonNumber INT, varEpisodeNumberSeason VARCHAR(16), varEpisodeNumberSeries VARCHAR(16), varDate DATE)";
 
-            if(oneSeason)
+            for (int i = 0; i < episodeList.Count; i++)
             {
-                sql = $"SELECT * FROM Series.uf_Get_SeasonID({ seriesID }, 1)";
-            }
-            else
-            { 
-                sql = $"SELECT * FROM Series.uf_Get_SeasonID({ seriesID }, { seasonNumber })";
+                WikiEpisode currentEpisode = episodeList[i];
+
+                
             }
 
-            return Convert.ToInt32(sqlDataAccess.RetrieveData(sql));
+            return episodesAdded;
         }
 
     }

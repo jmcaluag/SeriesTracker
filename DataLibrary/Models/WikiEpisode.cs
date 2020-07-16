@@ -6,6 +6,8 @@ namespace DataLibrary.Models
 {
     public class WikiEpisode
     {
+        public int SeriesID { get; set; }
+        public int SeasonNumber { get; set; }
         public string episodeNumberInSeries { get; set; } //EpisodeNumber
         public string episodeNumberInSeason { get; set; } //EpisodeNumber2
         public string title { get; set; }

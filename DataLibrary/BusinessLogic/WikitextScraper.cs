@@ -9,7 +9,7 @@ namespace DataLibrary.BusinessLogic
 {
     public class WikitextScraper
     {
-        public static List<WikiEpisode> ScrapeEpisodes(string episodeListAsWikitext)
+        public static List<WikiEpisode> ScrapeEpisodes(string episodeListAsWikitext, int seriesID, int seasonNumber)
         {
             List<WikiEpisode> listOfEpisodes = new List<WikiEpisode>();
 
@@ -35,7 +35,7 @@ namespace DataLibrary.BusinessLogic
                         if (CheckEpisodeDetail(currentLine))
                         {
                             //Ignores <hr> tags and other non-episode details under the collectStatus of "true".
-                            CollectEpisodeDetails(listOfEpisodes[listOfEpisodes.Count - 1], currentLine);
+                            CollectEpisodeDetails(listOfEpisodes[listOfEpisodes.Count - 1], currentLine, seriesID, seasonNumber);
                         }
 
                     }
@@ -75,14 +75,14 @@ namespace DataLibrary.BusinessLogic
             return validEpisodeDetail;
         }
 
-        private static void CollectEpisodeDetails(WikiEpisode episode, string readerLine)
+        private static void CollectEpisodeDetails(WikiEpisode episode, string readerLine, int seriesID, int seasonNumber)
         {
             string[] partialLines = readerLine.Split('=');
 
             string episodeKey = ParseWikitext(partialLines[0]);
             string episodeValue = ParseWikitext(partialLines[1]);
 
-            AssignValueToEpisode(episode, episodeKey, episodeValue);
+            AssignValueToEpisode(episode, episodeKey, episodeValue, seriesID, seasonNumber);
         }
 
         private static string ParseWikitext(string readerLine)
@@ -134,8 +134,11 @@ namespace DataLibrary.BusinessLogic
             return linkLabel;
         }
 
-        private static void AssignValueToEpisode(WikiEpisode episode, string episodeKey, string episodeValue)
+        private static void AssignValueToEpisode(WikiEpisode episode, string episodeKey, string episodeValue, int seriesID, int seasonNumber)
         {
+            episode.SeriesID = seriesID;
+            episode.SeasonNumber = seasonNumber;
+
             switch (episodeKey)
             {
                 case "EpisodeNumber":
