@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DataLibrary.Models;
+using static DataLibrary.BusinessLogic.WikitextScraper;
 
 namespace DataLibrary.BusinessLogic
 {
@@ -43,8 +44,10 @@ namespace DataLibrary.BusinessLogic
             // 2
             List<Section> wikiSections = await GetListOfWikiSections(wikipediaURI);
             string episodeListAsWikitext = await GetEpisodeListAsWikitext(wikiSections, oneSeason, wikipediaURL, specifiedSeason);
-            
+
             // TODO: eipsodeListAsWikitext ready for parsing and scraping.
+
+            List<WikiEpisode> listOfEpisodes = ScrapeEpisodes(episodeListAsWikitext);
 
             
 
