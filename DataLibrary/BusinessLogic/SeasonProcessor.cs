@@ -7,6 +7,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DataLibrary.Models;
 using static DataLibrary.BusinessLogic.WikitextScraper;
+using static DataLibrary.BusinessLogic.SeriesProcessor;
+using DataLibrary.DataAccess;
+using System.Data;
+using Npgsql;
+using Dapper;
 
 namespace DataLibrary.BusinessLogic
 {
@@ -37,6 +42,8 @@ namespace DataLibrary.BusinessLogic
                 // 3.1 Parse and scrape episodes from the wikitext and put into an WikiEpisode list.
 
             // 4. Use WikiEpisode list and loop to add episode details in the database.
+                // 4.1 Add a new season record to Series.Season
+                // 4.2 Retrieve language of the series to add Japanese episodes or ignore that process.
 
             // 1
             string wikipediaURI = CreateWikiURI(wikipediaURL);
@@ -45,11 +52,22 @@ namespace DataLibrary.BusinessLogic
             List<Section> wikiSections = await GetListOfWikiSections(wikipediaURI);
             string episodeListAsWikitext = await GetEpisodeListAsWikitext(wikiSections, oneSeason, wikipediaURL, specifiedSeason);
 
-            // TODO: eipsodeListAsWikitext ready for parsing and scraping.
-
+            // 3
             List<WikiEpisode> listOfEpisodes = ScrapeEpisodes(episodeListAsWikitext);
 
-            
+            // TODO: 
+            // 4
+            int addedSeason = 0;
+            if(oneSeason)
+            {
+               addedSeason = AddNewSeason(connectionString, seriesID, 1);
+            }
+            else
+            {
+               addedSeason = AddNewSeason(connectionString, seriesID, specifiedSeason);
+            }
+
+            string seriesLanguage = GetSeriesLanguage(connectionString, seriesID); // 4.2
 
             return 0; // Temp to appease the return method.
         }
@@ -191,6 +209,17 @@ namespace DataLibrary.BusinessLogic
 
             return seasonPageURL;
 
+        }
+
+        // Stored procedures from the Entertainment Database
+        private static int AddNewSeason(string connectionString, int seriesID, int seasonNumber)
+        {
+            string sql = @"CALL Series.usp_Insert_Season_No_Title(@SeriesID, @SeasonNumber)";
+
+            using (IDbConnection connection = new NpgsqlConnection(connectionString))
+            {
+                return connection.Execute(sql, new { SeriesID = seriesID, SeasonNumber = seasonNumber });
+            }
         }
     }
 

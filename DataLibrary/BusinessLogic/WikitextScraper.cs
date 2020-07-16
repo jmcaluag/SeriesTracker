@@ -138,9 +138,6 @@ namespace DataLibrary.BusinessLogic
         {
             switch (episodeKey)
             {
-                case "1":
-                    episode.season = episodeValue;
-                    break;
                 case "EpisodeNumber":
                     episode.episodeNumberInSeries = specialEpisodeNumber(episodeValue);
                     break;
