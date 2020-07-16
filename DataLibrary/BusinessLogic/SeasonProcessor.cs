@@ -43,7 +43,8 @@ namespace DataLibrary.BusinessLogic
 
             // 4. Use WikiEpisode list and loop to add episode details in the database.
                 // 4.1 Add a new season record to Series.Season
-                // 4.2 Retrieve language of the series to add Japanese episodes or ignore that process.
+                // 4.2 Retrieve season id of the season being added (from 4.1)
+                // 4.3 Retrieve language of the series to add Japanese episodes or ignore that process.
 
             // 1
             string wikipediaURI = CreateWikiURI(wikipediaURL);
@@ -57,17 +58,11 @@ namespace DataLibrary.BusinessLogic
 
             // TODO: 
             // 4
-            int addedSeason = 0;
-            if(oneSeason)
-            {
-               addedSeason = AddNewSeason(connectionString, seriesID, 1);
-            }
-            else
-            {
-               addedSeason = AddNewSeason(connectionString, seriesID, specifiedSeason);
-            }
+            int addedSeason = AddNewSeason(connectionString, oneSeason, seriesID, specifiedSeason); // 4.1
 
-            string seriesLanguage = GetSeriesLanguage(connectionString, seriesID); // 4.2
+            int seasonID = GetSeasonID(connectionString, oneSeason, seriesID, specifiedSeason);
+
+            string seriesLanguage = GetSeriesLanguage(connectionString, seriesID); // 4.3
 
             return 0; // Temp to appease the return method.
         }
@@ -212,7 +207,21 @@ namespace DataLibrary.BusinessLogic
         }
 
         // Stored procedures from the Entertainment Database
-        private static int AddNewSeason(string connectionString, int seriesID, int seasonNumber)
+        private static int AddNewSeason(string connectionString, bool oneSeason, int seriesID, int seasonNumber)
+        {
+            int addedSeason;
+            if (oneSeason)
+            {
+                addedSeason = InsertNewSeason(connectionString, seriesID, 1);
+            }
+            else
+            {
+                addedSeason = InsertNewSeason(connectionString, seriesID, seasonNumber);
+            }
+
+            return addedSeason;
+        }
+        private static int InsertNewSeason(string connectionString, int seriesID, int seasonNumber)
         {
             string sql = @"CALL Series.usp_Insert_Season_No_Title(@SeriesID, @SeasonNumber)";
 
@@ -221,6 +230,25 @@ namespace DataLibrary.BusinessLogic
                 return connection.Execute(sql, new { SeriesID = seriesID, SeasonNumber = seasonNumber });
             }
         }
+        private static int GetSeasonID(string connectionString, bool oneSeason, int seriesID, int seasonNumber)
+        {
+            SqlDataAccess sqlDataAccess = new SqlDataAccess();
+            sqlDataAccess.GetConnectionString(connectionString);
+
+            string sql;
+
+            if(oneSeason)
+            {
+                sql = $"SELECT * FROM Series.uf_Get_SeasonID({ seriesID }, 1)";
+            }
+            else
+            { 
+                sql = $"SELECT * FROM Series.uf_Get_SeasonID({ seriesID }, { seasonNumber })";
+            }
+
+            return Convert.ToInt32(sqlDataAccess.RetrieveData(sql));
+        }
+
     }
 
 }
