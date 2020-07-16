@@ -66,11 +66,11 @@ namespace DataLibrary.BusinessLogic
 
             // Arguments needed to add episode details: seriesID, seasonNumber, episodeNumberSeason, episodeNumberSeries, original air date
             // Arguments needed to add episode titles: episode ID, language code, title
-
-            int addedEpisodes = InsertEpisodesToDatabase(connectionString, oneSeason, seriesID, specifiedSeason, seriesLanguage, listOfEpisodes); // 4.4
+            int seasonID = GetSeasonID(connectionString, oneSeason, seriesID, specifiedSeason);
+            int addedEpisodes = InsertEpisodesToDatabase(connectionString, seriesLanguage, seasonID, listOfEpisodes); // 4.4
             
 
-            return 0; // Temp to appease the return method.
+            return addedEpisodes; // Temp to appease the return method.
         }
 
         private static string CreateWikiURI(string wikipediaURL)
@@ -212,6 +212,25 @@ namespace DataLibrary.BusinessLogic
 
         }
 
+        private static int GetSeasonID(string connectionString, bool oneSeason, int seriesID, int seasonNumber)
+        {
+            SqlDataAccess sqlDataAccess = new SqlDataAccess();
+            sqlDataAccess.GetConnectionString(connectionString);
+
+            string sql;
+
+            if (oneSeason)
+            {
+                sql = $"SELECT * FROM Series.uf_Get_SeasonID({ seriesID }, 1)";
+            }
+            else
+            {
+                sql = $"SELECT * FROM Series.uf_Get_SeasonID({ seriesID }, { seasonNumber })";
+            }
+
+            return Convert.ToInt32(sqlDataAccess.RetrieveData(sql));
+        }
+
         // Stored procedures from the Entertainment Database
         private static int AddNewSeason(string connectionString, bool oneSeason, int seriesID, int seasonNumber)
         {
@@ -237,25 +256,46 @@ namespace DataLibrary.BusinessLogic
             }
         }
 
-        private static int InsertEpisodesToDatabase(string connectionString, bool oneSeason, int seriesID, int seasonNumber, string seriesLanguage, List<WikiEpisode> episodeList)
+        private static int InsertEpisodesToDatabase(string connectionString, string seriesLanguage, int seasonID, List<WikiEpisode> episodeList)
         {
             int episodesAdded = 0;
-
-            if (oneSeason) { seasonNumber = 1; };
+            int episodeTitlesAdded = 0;
 
             SqlDataAccess sqlDataAccess = new SqlDataAccess();
             sqlDataAccess.GetConnectionString(connectionString);
 
-            string insertEpisodeSQL = @"CALL Series.usp_Insert_Episode(varSeriesID INT, varSeasonNumber INT, varEpisodeNumberSeason VARCHAR(16), varEpisodeNumberSeries VARCHAR(16), varDate DATE)";
+            string insertEpisodeSQL = @"CALL Series.usp_Insert_Episode(@SeriesID, @SeasonNumber, @episodeNumberInSeries, @episodeNumberInSeason, @originalAirDate)";
 
             for (int i = 0; i < episodeList.Count; i++)
             {
                 WikiEpisode currentEpisode = episodeList[i];
 
-                
+                episodesAdded += sqlDataAccess.SaveData<WikiEpisode>(insertEpisodeSQL, currentEpisode);
+
+                string retrieveEpisodeIDSQL = $"SELECT * FROM series.uf_retrieve_episodeid({ seasonID }, '{ episodeList[i].episodeNumberInSeason }')";
+                int episodeID = Convert.ToInt32(sqlDataAccess.RetrieveData(retrieveEpisodeIDSQL));
+
+                //Add English Episode
+                episodeTitlesAdded += InsertEpisodeTitle(connectionString, episodeID, "ENG", currentEpisode.title);
+
+                if(seriesLanguage.Equals("Japanese"))
+                {
+                    episodeTitlesAdded += InsertEpisodeTitle(connectionString, episodeID, "RMJ", currentEpisode.titleRomaji);
+                    episodeTitlesAdded += InsertEpisodeTitle(connectionString, episodeID, "JPN", currentEpisode.titleJapanese);
+                }
             }
 
             return episodesAdded;
+        }
+
+        private static int InsertEpisodeTitle(string connectionString, int episodeID, string languageCode, string title)
+        {
+            string sql = @"CALL Series.usp_Insert_Episode_Title(@EpisodeID, @LanguageCode, @Title)";
+
+            using (IDbConnection connection = new NpgsqlConnection(connectionString))
+            {
+                return connection.Execute(sql, new { EpisodeID = episodeID, LanguageCode = languageCode, Title = title});
+            }
         }
 
     }

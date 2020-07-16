@@ -128,9 +128,11 @@ namespace SeriesTracker.Controllers
                 model.SpecifiedSeason = 0;
             }
 
+            int test = model.SeriesID;
+
             int episodesAdded = await SeasonProcessor.AddSeason(connectionString, model.WikipediaURL, model.OneSeason, model.SpecifiedSeason, model.SeriesID);
 
-            return RedirectToAction("SeriesDetails", new { model.SeriesID });
+            return RedirectToAction("Index");
         }
     }
 }
