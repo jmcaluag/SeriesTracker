@@ -45,6 +45,7 @@ namespace DataLibrary.BusinessLogic
                 // 4.1 Add a new season record to Series.Season
                 // 4.2 Retrieve season id of the season being added (from 4.1)
                 // 4.3 Retrieve language of the series to add Japanese episodes or ignore that process.
+                // 4.4 Loop to add episodes from WikiEpisode and episode titles.
 
             // 1
             string wikipediaURI = CreateWikiURI(wikipediaURL);
@@ -60,9 +61,15 @@ namespace DataLibrary.BusinessLogic
             // 4
             int addedSeason = AddNewSeason(connectionString, oneSeason, seriesID, specifiedSeason); // 4.1
 
-            int seasonID = GetSeasonID(connectionString, oneSeason, seriesID, specifiedSeason);
+            int seasonID = GetSeasonID(connectionString, oneSeason, seriesID, specifiedSeason); // 4.2
 
             string seriesLanguage = GetSeriesLanguage(connectionString, seriesID); // 4.3
+
+            // 4.4
+            // Arguments needed to add episode details: seriesID, seasonNumber, episodeNumberSeason, episodeNumberSeries, original air date
+            // Arguments needed to add episode titles: episode ID, language code, title
+
+            
 
             return 0; // Temp to appease the return method.
         }
