@@ -272,7 +272,7 @@ namespace DataLibrary.BusinessLogic
 
                 episodesAdded += sqlDataAccess.SaveData<WikiEpisode>(insertEpisodeSQL, currentEpisode);
 
-                string retrieveEpisodeIDSQL = $"SELECT * FROM series.uf_retrieve_episodeid({ seasonID }, '{ episodeList[i].episodeNumberInSeason }')";
+                string retrieveEpisodeIDSQL = $"SELECT * FROM series.uf_retrieve_episodeid({ seasonID }, '{ episodeList[i].episodeNumberInSeries }')";
                 int episodeID = Convert.ToInt32(sqlDataAccess.RetrieveData(retrieveEpisodeIDSQL));
 
                 //Add English Episode
