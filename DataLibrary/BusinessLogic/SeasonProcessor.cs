@@ -19,6 +19,7 @@ namespace DataLibrary.BusinessLogic
     {
         private static readonly HttpClient client = new HttpClient();
 
+        // Complete process of accessing Wikipedia API, Scraping details, and inserting into database
         public static async Task<int> AddSeason(string connectionString, string wikipediaURL, bool oneSeason, int specifiedSeason, int seriesID)
         {
             // 1. Wikipedia URL into Wikipedia RESTful API URI
@@ -58,7 +59,6 @@ namespace DataLibrary.BusinessLogic
             if(oneSeason) { specifiedSeason = 1; }
             List<WikiEpisode> listOfEpisodes = ScrapeEpisodes(episodeListAsWikitext, seriesID, specifiedSeason);
 
-            // TODO: 
             // 4
             int addedSeason = AddNewSeason(connectionString, oneSeason, seriesID, specifiedSeason); // 4.1
 
@@ -70,7 +70,7 @@ namespace DataLibrary.BusinessLogic
             int addedEpisodes = InsertEpisodesToDatabase(connectionString, seriesLanguage, seasonID, listOfEpisodes); // 4.4
             
 
-            return addedEpisodes; // Temp to appease the return method.
+            return addedEpisodes;
         }
 
         private static string CreateWikiURI(string wikipediaURL)

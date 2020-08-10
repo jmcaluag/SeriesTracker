@@ -56,6 +56,17 @@ namespace DataLibrary.BusinessLogic
             return sqlDataAccess.SaveData<SeriesModel>(sql, series);
         }
 
+        public static string GetSeriesTitle(string connectionString, int seriesID)
+        {
+            string sql = $"SELECT * FROM series.uf_get_series_title( { seriesID } )";
+
+            SqlDataAccess sqlDataAccess = new SqlDataAccess();
+
+            sqlDataAccess.GetConnectionString(connectionString);
+
+            return sqlDataAccess.RetrieveData(sql);
+        }
+
         public static string GetSeriesLanguage(string connectionString, int seriesID)
         {
             string sql = $"SELECT * FROM series.uf_get_series_language( { seriesID } )";

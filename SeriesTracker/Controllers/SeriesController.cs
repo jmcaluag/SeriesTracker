@@ -65,11 +65,11 @@ namespace SeriesTracker.Controllers
 
         public IActionResult SeriesDetails(int? id)
         {
-            string seriesLanguage = GetSeriesLanguage(connectionString, Convert.ToInt32(id)); // Retrieves series language to decide which table to use in the view.
-
             var data = LoadEpisodes(connectionString, Convert.ToInt32(id)); // This returns a DataLibrary.EpisodeModel
 
             List<EpisodeModel> episodes = new List<EpisodeModel>();
+            
+            string seriesLanguage = GetSeriesLanguage(connectionString, Convert.ToInt32(id)); // Retrieves series language to decide which table to use in the view.
 
             if (seriesLanguage.Equals("Japanese"))
             {
@@ -104,8 +104,11 @@ namespace SeriesTracker.Controllers
                 }
             }
 
+            int seriesID = Convert.ToInt32(id);
+
             ViewData["Language"] = seriesLanguage;
-            ViewData["SeriesID"] = Convert.ToInt32(id);
+            ViewData["SeriesID"] = seriesID;
+            ViewData["SeriesTitle"] = GetSeriesTitle(connectionString, seriesID);
 
             return View(episodes);
         }
@@ -123,14 +126,24 @@ namespace SeriesTracker.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSeason(AddSeasonModel model)
         {
-            if(model.SpecifiedSeason == 0)
+
+            if(model.OneSeason.Equals("true"))
             {
                 model.SpecifiedSeason = 0;
             }
 
-            int test = model.SeriesID;
+            bool oneSeason;
+            if(model.OneSeason.Equals("true"))
+            {
+                oneSeason = true;
+            }
+            else
+            {
+                oneSeason = false;
+            }
 
-            int episodesAdded = await SeasonProcessor.AddSeason(connectionString, model.WikipediaURL, model.OneSeason, model.SpecifiedSeason, model.SeriesID);
+
+            int episodesAdded = await SeasonProcessor.AddSeason(connectionString, model.WikipediaURL, oneSeason, model.SpecifiedSeason, model.SeriesID);
 
             return RedirectToAction("Index");
         }
