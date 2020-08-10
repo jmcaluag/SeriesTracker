@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<SeriesTracker.Models.SeriesModel>
 
 @{
-    ViewData["Title"] = "Series";
+    ViewData["Title"] = "DeleteSeries";
 }
 
-<h2>Series</h2>
+<h1>DeleteSeries</h1>
+
+// Series ID info is available here using "model.SeriesID"
 
 <p>
-    <a asp-controller="Series" asp-action="AddSeries">Add a new series</a> | 
-    <a asp-action="">Edit</a> | 
-    <a asp-controller="Series" asp-action="DeleteSeries">Delete</a>
+    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -33,7 +33,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                <a asp-controller="Series" asp-action="SeriesDetails" asp-route-id="@item.SeriesID">@Html.DisplayFor(modelItem => item.Title)</a>
+                @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DebutYear)
