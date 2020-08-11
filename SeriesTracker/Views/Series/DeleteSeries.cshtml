@@ -4,13 +4,10 @@
     ViewData["Title"] = "DeleteSeries";
 }
 
-<h1>DeleteSeries</h1>
+<h1>Delete A Series</h1>
 
-// Series ID info is available here using "model.SeriesID"
+@*Series ID info is available here using "model.SeriesID"*@
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -44,7 +41,19 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Language)
             </td>
+            <td>
+                @*TODO: Implement an Inline Delete Confirmation (instead of an alert box)*@
+                <a class="btn btn-danger" onclick="return confirm('This action will delete the series and ALL episodes.\nAre you sure you want to delete this series: @item.Title ?')">Delete</a>
+            </td>
         </tr>
 }
     </tbody>
 </table>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/delete-series.css" type="text/css" />
+}
+
+@section Scripts {
+    <script src="~/js/delete-series.js"></script>
+} 
