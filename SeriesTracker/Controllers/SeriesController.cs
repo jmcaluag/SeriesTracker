@@ -45,10 +45,6 @@ namespace SeriesTracker.Controllers
             return View(series);
         }
 
-        // ------
-        // Series
-        // ------
-
         public IActionResult AddSeries()
         {
             return View();
@@ -117,31 +113,6 @@ namespace SeriesTracker.Controllers
             return View(episodes);
         }
 
-        public IActionResult DeleteSeries()
-        {
-            var data = LoadSeries(connectionString);
-
-            List<SeriesModel> series = new List<SeriesModel>();
-
-            foreach (var row in data)
-            {
-                series.Add(new SeriesModel
-                {
-                    SeriesID = row.SeriesID,
-                    Title = row.Title,
-                    DebutYear = row.DebutYear,
-                    FilmType = row.FilmType,
-                    Genre = row.Genre,
-                    Language = row.Language
-                });
-            }
-
-            return View(series);
-        }
-
-        // ------
-        // Season
-        // ------
         public IActionResult AddSeason(int? id)
         {
             AddSeasonModel addSeasonModel = new AddSeasonModel()
