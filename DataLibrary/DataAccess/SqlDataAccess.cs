@@ -42,5 +42,13 @@ namespace DataLibrary.DataAccess
                 return connection.Execute(sql, data);
             }
         }
+
+        public int ExecuteStoredProcedure(string sql)
+        {
+            using (IDbConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                return connection.Execute(sql);
+            }
+        }
     }
 }

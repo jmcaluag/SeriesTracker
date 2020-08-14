@@ -84,6 +84,11 @@ namespace SeriesTracker.Controllers
 
             return View(series);
         }
+        public IActionResult ExecuteDeleteSeries(int id)
+        {
+            int seriesDeleted = SeriesProcessor.DeleteSeries(connectionString, id);
+            return RedirectToAction("Index");
+        }
 
         public IActionResult SeriesDetails(int? id)
         {

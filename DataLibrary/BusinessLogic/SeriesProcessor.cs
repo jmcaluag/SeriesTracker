@@ -78,6 +78,17 @@ namespace DataLibrary.BusinessLogic
             return sqlDataAccess.RetrieveData(sql);
         }
 
+        public static int DeleteSeries(string connectionString, int seriesID)
+        {
+            SqlDataAccess sqlDataAccess = new SqlDataAccess();
+
+            sqlDataAccess.GetConnectionString(connectionString);
+
+            string sql = $"CALL series.usp_delete_series( { seriesID } )";
+
+            return sqlDataAccess.ExecuteStoredProcedure(sql);
+        }
+
     // Episodes
         public static List<EpisodeModel> LoadEpisodes(string connectionString, int id)
         {

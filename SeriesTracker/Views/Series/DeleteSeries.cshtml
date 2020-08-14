@@ -37,7 +37,7 @@
                 @Html.DisplayFor(modelItem => item.DebutYear)
             </td>
             <td>
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                <a asp-controller="Series" asp-action="ExecuteDeleteSeries" asp-route-id="@item.SeriesID">Delete</a>
             </td>
         </tr>
 }
