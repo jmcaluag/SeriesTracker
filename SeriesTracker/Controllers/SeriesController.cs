@@ -63,6 +63,28 @@ namespace SeriesTracker.Controllers
             return View();
         }
 
+        public IActionResult DeleteSeries()
+        {
+            var data = LoadSeries(connectionString);
+
+            List<SeriesModel> series = new List<SeriesModel>();
+
+            foreach (var row in data)
+            {
+                series.Add(new SeriesModel
+                {
+                    SeriesID = row.SeriesID,
+                    Title = row.Title,
+                    DebutYear = row.DebutYear,
+                    FilmType = row.FilmType,
+                    Genre = row.Genre,
+                    Language = row.Language
+                });
+            }
+
+            return View(series);
+        }
+
         public IActionResult SeriesDetails(int? id)
         {
             var data = LoadEpisodes(connectionString, Convert.ToInt32(id)); // This returns a DataLibrary.EpisodeModel
@@ -147,5 +169,7 @@ namespace SeriesTracker.Controllers
 
             return RedirectToAction("Index");
         }
+
+        
     }
 }
