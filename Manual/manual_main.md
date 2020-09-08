@@ -3,6 +3,11 @@ The Series Tracker gets it data from Wikipedia (Powered by WikiData). As of this
 
 The Series Tracker aims to be a CRUD application aided by the use of Wikipedia's RESTful API services to supply and collect data.
 
+## Video Demo
+
+* [Adding *Friends* Season 1.](https://streamable.com/dhm6bg)
+* [Adding *My Hero Academia* Season 1 and 2.](https://streamable.com/o1to2n)
+
 
 ## Sections
 * [Admin Roles](#admin-roles)
